@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!-- CopyRight (c) 2013 John Robinson - http://www.storminthecastle.com -->
+<html>
+
+<head>
+<title>Goo Demo</title>
+<link href="../style/style.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+
+<script type="text/javascript" src="./prettify.js"></script>
+<script src="../build/goo.min.js"></script>
+<script src="./demo.js"></script>
+<script>
+
+function handleLoad() {
+ prettyPrint();
+ demo(document.getElementById("demo"));
+}
+
+</script>
+
+<body onload="handleLoad();">
+<div id="container">
+
+<h1>goo.js</h1>
+A self-contained microlibrary intended to simplify drawing and event handling with the HTML5 canvas object.<br/>
+
+
+<br/>
+<i>Note: This library does not implement a scene graph or provide higher level drawing abstractions.
+It provides a canvas wrapper object that takes out some of the grunge work of dealing with the HTML5
+canvas object.</i><br/>
+
+
+<br/>
+<div id="demo" width="300" height="300"></div>
+Demo: Try dragging your mouse around...
+<br/>
+
+<h2>Get It!</h2>
+<ul>
+	<li><a href="../build/goo.min.js"><strong>Download the minified source</strong></a> <small>[3kb]</small></li>
+	<li><a href="http://github.com/johnrobinsn/goo.js">Goo on GitHub!</a></li>
+</ul>
+<h2>More Samples</h2>
+<ul>
+  <li><a href="../samples/events.html">Goo Events!</a></li>
+  <li><a href="../samples/fullscreen.html">Fullscreen</a></li>
+  <li><a href="../samples/racer.html">Goo Racer</a></li>
+  <li><a href="../samples/timedanimation.html">TimedAnimation</a></li>
+</ul>
+
+<h2>Creating a Fullscreen 2D Canvas</h2>
+<pre class="prettyprint">&lt;script type="text/javascript" src="goo.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"&gt;
+ 
+window.onload = function() {
+ 
+ var g = new Goo({ fullscreen: true,
+  userData: {startAngle: 0},
+  onDraw: function(g) {
+    var canvas = g.canvas;
+    var ctx = g.ctx;
+    ctx.clearRect(0, 0, g.width, g.height);
+
+    // Draw a sun-like figure by rotating and adding rectangles in a loop
+    ctx.globalAlpha = 0.20;
+    var n = 5;
+    var a = g.userData.startAngle + ((2* 3.1415) / n);
+    var s = ((canvas.width < canvas.height)?canvas.width:canvas.height)/2;
+    for (var i = 0; i < n; i++) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.translate(canvas.width/2, canvas.height/2);
+      ctx.rotate(i * a);
+      ctx.translate(-s/2,-s/2);
+      ctx.rect(0, 0, s, s);
+      ctx.fillStyle="#E30B5D"; // raspberry
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+  onMouseDrag: function(g) {
+    var delta = (g.mouseX - g.prevMouseX) + (g.mouseY - g.prevMouseY);
+    g.userData.startAngle += ((delta * Math.PI) / 180) / 2;
+  }
+  });
+};
+
+&lt;/script&gt;</pre> 
+
+<p>
+Passing the property <code>fullscreen:true</code> into the <code>Goo</code>'s constructor will append a canvas element to the document body that will be resized with the window.</p><p>You can override the event properties such as <code>onDraw</code> and <code>onMouseDrag</code> to implement your own application logic and drawing code. <a href="#props">A complete list</a> of <code>Goo</code>'s properties and events are shown below.</p>
+</p>
+
+<hr/>
+
+<h2>Construction properties for <code>Goo</code>'s constructor</h2>
+
+<pre class="prettyprint">
+var g = new Goo( { width: 800, height: 600, container: document.body } );
+
+// Does the same thing as ...
+
+var g = new Goo( { width: 800, height: 600 } );
+document.body.appendChild( g.canvas );
+</pre>
+
+<dl>
+<dt class="string">type</dt><dd>type of rendering context<span class="hint">defaults to '2d'</span></dd>
+<dt class="event">onFailure</dt><dd>fires if the canvas's ctx can't be created</dd>
+<dt class="boolean">fullscreen</dt><dd>if true, appends a canvas to the document body that will be resized with the window.<span class="hint">If true, the remaining construction properties will be ignored.  defaults to false</span></dd>
+<hr/>
+<dt class="dom">container</dt><dd>DOM element to which the canvas element is appended<span class="hint">If not specified, the <code>Goo</code>'s canvas property must be manually appended to another DOM element on the page.</span></dd>
+<dt class="number">width</dt><dd>initial width of the canvas element</dd>
+<dt class="number">height</dt><dd>initial height of the canvas element</dd>
+</dl>
+<hr/>
+<h2><a name="props"></a>Runtime properties of a <code>Goo</code> object</h2>
+
+<dl id="doc">
+<dt class="object special readonly">ctx</dt>	<dd>the canvas's rendering context</dd>
+<dt class="dom readonly">canvas</dt>	<dd>the canvas's DOM element</dd>
+
+<hr/>
+
+<dt class="object special">userData</dt>	<dd>empty placeholder object for storing user data</dd>
+
+<hr/>
+
+<dt class="number">width</dt>	<dd>current width of the canvas element</dd>
+<dt class="number">height</dt>	<dd>current height of the canvas element</dd>
+
+<dt class="number readonly">mouseX</dt>	<dd>the x position of the mouse relative to the canvas element</dd>
+<dt class="number readonly">mouseY</dt>	<dd>the y position of the mouse relative to the canvas element</dd>
+<dt class="number readonly">prevMouseX</dt>	<dd>the previous x position of the mouse</dd>
+<dt class="number readonly">prevMouseY</dt>	<dd>the previous y position of the mouse</dd>
+
+<hr/>
+
+<dt class="string readonly">key</dt>	<dd>the character that was last pressed</dd>
+<dt class="number readonly">keyCode</dt>	<dd>the integer that represents the key that was last pressed</dd>
+
+<hr/>
+
+<dt class="boolean readonly">keysDown</dt>	<dd>array of values indexed by keyCode true if a key is pressed</dd>
+
+<hr/>
+
+<dt class="boolean">animate</dt>	<dd>if true, the onDraw event is fired repeatedly <span class="hint"><code>animate</code> is true by default.</span></dd>
+
+<dt class="event">onDraw</dt>	<dd>fires every frame, as long as the canvas is visible. <span class="hint">Put your drawing code here.</span></dd>
+
+<dt class="event">onMouseDown</dt>	<dd>fires when the mouse is pressed on the canvas</dd>
+<dt class="event">onMouseUp</dt>	<dd>fires when the mouse is released from the canvas</dd>
+
+<dt class="event">onMouseMove</dt>	<dd>fires while the mouse is moving over the canvas</dd>
+<dt class="event">onMouseDrag</dt>	<dd>fires while the mouse is dragged over the canvas</dd>
+
+<dt class="event">onMouseOver</dt>	<dd>fires once the mouse enters the canvas</dd>
+<dt class="event">onMouseOut</dt>	<dd>fires once the mouse exits the canvas</dd>
+
+<dt class="event">onKeyDown</dt> <dd>fires while a key is held down <span class="hint">If the key is held down then keydown will execute repeatedly.</span></dd>
+<dt class="event">onKeyUp</dt> <dd>fires when a key is released</dd>
+<dt class="event">onKeyPress</dt> <dd>fires when a key is pressed</dd>
+
+<dt class="event">onFrameRate</dt> <dd>fires periodically when the framerate is recalculated (approximately 1/s)</dd>
+
+<hr/>
+
+</dl>
+<br/>
+<div style="background-color:#eee;padding:10px;border-radius:7px;">The goo.js microlibrary and documentation style has been heavily inspired and influenced by
+the excellent but now deprecated <a href="http://georgealways.github.io/gee/">gee.js library</a>.
+</div>
+
+<br/>
+</div>
+</body>
+</html>
