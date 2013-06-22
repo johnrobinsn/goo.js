@@ -1,0 +1,17 @@
+<html>
+<script src="../build/goo.min.js"></script>
+<script>
+
+function handleLoad() {
+ console.log("here");
+ var g = new Goo({ fullscreen: true, type: "experimental-webgl",
+    onFailure: function() { alert("Your browser does not support WebGL."); }
+  });
+  
+};
+
+</script>
+
+<body onload="handleLoad();">
+</body>
+</html>

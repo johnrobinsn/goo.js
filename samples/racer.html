@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!-- CopyRight (c) 2011 LiquidThought LLC -->
+<html>
+
+<head>
+<title>Goo Racer!</title>
+<link href="../style/style.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<script src="../build/goo.min.js"></script>
+<script>
+
+var MAX_FORWARD = 20.0;
+var MAX_REVERSE = -20.0;
+
+var carStraight = new Image();
+carStraight.src = "./res/car_straight.png";
+var carLeft = new Image();
+carLeft.src = "./res/car_left.png";
+var carRight = new Image();
+carRight.src = "./res/car_right.png";
+
+var counter = 1000;
+var angle = 180;
+var xpos = 400;
+var ypos = 300;
+var speed = 0.0;
+
+function onLoad() {
+	var g = new Goo({width:800, height:600, 
+	    container:document.getElementById("canvasholder"),
+	    onDraw: function(g) {
+	      // Support arrow keys, WASD and 2468
+        var keyForward = g.keysDown[38] || g.keysDown[87] || g.keysDown[50];
+        var keyReverse = g.keysDown[40] || g.keysDown[83] || g.keysDown[56];
+        var keyLeft = g.keysDown[37] || g.keysDown[65] || g.keysDown[52];
+        var keyRight = g.keysDown[39] || g.keysDown[68] || g.keysDown[54];
+
+        if (keyForward)
+          speed = Math.min(MAX_FORWARD, speed+0.4);
+        else if (keyReverse)
+          speed = Math.max(MAX_REVERSE, speed-0.4);
+        else
+        {
+          speed *= 0.98;
+          if (Math.abs(speed) < 0.5) speed = 0;
+        }
+    
+        var carImage;   
+        // rotate/turn
+        if (keyLeft)
+        {
+          angle = (angle - 2 * (speed / MAX_FORWARD)) % 360;
+          carImage = carLeft;
+        }
+        else if (keyRight)
+        {
+          angle = (angle + 2 * (speed / MAX_FORWARD)) % 360;
+          carImage = carRight;
+        }
+        else {
+          carImage = carStraight;
+        }
+    
+        // move forward/backward
+        var x = 0;
+        var y = speed;
+    
+        var angleRads = angle * (Math.PI / 180.0);
+    
+        var deltaX = x * Math.cos(angleRads) - y * Math.sin(angleRads)
+        var deltaY = x * Math.sin(angleRads) + y * Math.cos(angleRads)
+    
+        xpos += deltaX;
+        ypos += deltaY;
+            
+        var carLength = 128;
+        var wrapped = false;
+    
+        if (xpos < - carLength) {
+            xpos = g.width+carLength;  
+            wrapped = true;
+        }
+        else if (xpos >= g.width+carLength) {
+            xpos = -carLength;
+            wrapped = true;
+        }
+    
+        if (ypos < -carLength) {
+            ypos = g.height+carLength;  
+            wrapped = true;
+        }
+        else if (ypos >= g.height+carLength) {
+            ypos = -carLength;
+            wrapped = true;
+        }
+    
+        g.ctx.save();
+        g.ctx.clearRect(0,0,g.width,g.height);
+        g.ctx.translate(xpos, ypos);
+        g.ctx.rotate(angleRads);
+
+        if (speed != 0) {
+          // reset our trail
+          if (counter++ > 1000) {
+            g.ctx.beginPath();
+            g.ctx.moveTo(0,-carStraight.height/2-10);
+            counter = 0;
+          }
+        }    
+        g.ctx.strokeStyle = "orange";
+        if (wrapped)
+          g.ctx.moveTo(0,-carStraight.height/2-10);
+        g.ctx.lineTo(0,0);
+        g.ctx.lineWidth = 5;
+//        g.ctx.setLineDash([10,10]);
+        g.ctx.stroke();
+        
+        g.ctx.drawImage(carImage, -carStraight.width/2, -carStraight.height/2);
+        g.ctx.restore();
+	    }
+	  });
+}
+
+</script>
+<body onload="onLoad();">
+<h1>Goo Racer!</h1>
+<div id="canvasholder" style="width:800px;height:600px;"></div>
+Use the arrow keys or WASD to drive.
+</body>
+</html>
