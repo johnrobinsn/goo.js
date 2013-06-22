@@ -179,7 +179,7 @@ var addSign = function(x,y,s,b,f,z,m,t) {
  g = new Goo({
   container: container,
   width: 600,
-  height:600,
+  height:550,
   onMouseDrag: function(g) {
       addSign(g.mouseX, g.mouseY, "g.onMouseDrag()", "black", "white");
     },
