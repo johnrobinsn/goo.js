@@ -112,7 +112,6 @@ function onLoad() {
           g.ctx.moveTo(0,-carStraight.height/2-10);
         g.ctx.lineTo(0,0);
         g.ctx.lineWidth = 5;
-//        g.ctx.setLineDash([10,10]);
         g.ctx.stroke();
         
         g.ctx.drawImage(carImage, -carStraight.width/2, -carStraight.height/2);
@@ -124,6 +123,7 @@ function onLoad() {
 </script>
 <body onload="onLoad();">
 <h1>Goo Racer!</h1>
+<a href="../index.html">by John Robinson</a><br/><br/>
 <div id="canvasholder" style="width:800px;height:600px;"></div>
 Use the arrow keys or WASD to drive.
 </body>

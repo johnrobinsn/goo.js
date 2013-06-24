@@ -10,6 +10,7 @@ window.onload = function() {
  var g = new Goo({ fullscreen: true,
   userData: {startAngle: 0},
   onDraw: function(g) {
+    var u = g.userData;
     var canvas = g.canvas;
     var ctx = g.ctx;
     ctx.clearRect(0, 0, g.width, g.height);
@@ -17,7 +18,7 @@ window.onload = function() {
     // Draw a sun-like figure by rotating and adding rectangles in a loop
     ctx.globalAlpha = 0.20;
     var n = 5;
-    var a = g.userData.startAngle + ((2* 3.1415) / n);
+    var a = u.startAngle + ((2* 3.1415) / n);
     var s = ((canvas.width < canvas.height)?canvas.width:canvas.height)/2;
     for (var i = 0; i < n; i++) {
       ctx.save();
@@ -42,5 +43,6 @@ window.onload = function() {
 </script>
 
 <body>
+<a href="../index.html" style="position:absolute;padding-left:5px;">Goo Fullscreen Sample by John Robinson</a>
 </body>
 </html>
