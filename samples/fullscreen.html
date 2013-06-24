@@ -38,11 +38,14 @@ window.onload = function() {
     g.userData.startAngle += ((delta * Math.PI) / 180) / 2;
   }
   });
+  
+  // Hide my link if not in a top level window
+  document.getElementById("goolink").display = (window.top === window.self)?"none":"inline";
 };
 
 </script>
 
 <body>
-<a href="../index.html" style="position:absolute;padding-left:5px;">Goo Fullscreen Sample by John Robinson</a>
+<a id="goolink" href="../" style="position:absolute;padding-left:5px;">Goo Fullscreen Sample by John Robinson</a>
 </body>
 </html>
