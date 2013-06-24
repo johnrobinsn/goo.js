@@ -40,7 +40,7 @@ window.onload = function() {
   });
   
   // Hide my link if not in a top level window
-  document.getElementById("goolink").style.display = (window.top === window.self)?"inline":"none";
+  document.getElementById("goolink").style.display = (window.location != window.parent.location)?"none":"inline";
 };
 
 </script>
