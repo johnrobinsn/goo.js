@@ -138,11 +138,12 @@ var Goo = function(o) {
       {
         self.updateMouse(e.pageX, e.pageY);
         self.onMouseDrag(self);
+        e.preventDefault();
       }
+      /* Doesn't really make sense
       else if (self.onMouseMove && e.target == self.canvas)
         self.onMouseMove(self);
-      if (self.fullscreen)
-        e.preventDefault();
+      */
   }, false);
     
   document.addEventListener("click", function(e) {
