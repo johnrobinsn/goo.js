@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- CopyRight (c) 2013 John Robinson - http://www.storminthecastle.com -->
+<html>
+
+<head>
+<title>Goo Events!</title>
+<link href="../style/style.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+
+<script src="../build/goo.min.js"></script>
+<script>
+
+window.onload = function() {
+
+var g = new Goo({width:300, height:300,
+  container: document.getElementById("events"),
+  onMouseMove: function(g){
+    console.log("onMouseMove: ", [g.mouseX, g.mouseY]);
+  },
+  onKeyDown: function(g){
+    console.log("onKeyDown: ", [g.keyCode]);
+  },
+  onMouseDown: function(g){
+    console.log("onMouseMove: ", [g.mouseX, g.mouseY]);
+  },
+  });
+
+}
+
+</script>
+
+<body>
+<h1>Goo Events!</h1>
+<a href="../">by John Robinson</a><br/><br/>
+<div id="events" width="300" height="300"></div>
+Demo: Try mousing around, clicking, dragging and typing on your keyboard.<br/>
+<br/>
+
+</body>
+</html>

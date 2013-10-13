@@ -1,0 +1,145 @@
+<html>
+<head>
+<script src="editorcode.js"></script>
+<title>Canvas Playground</title>
+<!--link href="../style/style.css" media="screen" rel="stylesheet" type="text/css" /-->
+<style>
+.CodeMirror {width:480px; height:480px;}
+.play {border:1px solid black;width:480px; height:480px; display: inline-block; vertical-align: top;}
+.leftplay {display: inline-block; vertical-align: top;}
+.panel {display:inline-block; width:480px; vertical-align:top;}
+.leftpanel {display:inline-block; vertical-align:top;}
+canvas {border: 1px solid black; display:inline-block;}
+#message {}
+.success {color: green;}
+.error {color: red;}
+#stack {font-size: 12px;}
+</style>
+</head>
+<script src="../../build/goo.min.js"></script>
+<link rel="stylesheet" href="./codemirror/lib/codemirror.css">
+<script src="./codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="./codemirror/theme/solarized.css">
+<link rel="stylesheet" href="./codemirror/theme/base16-light.css">
+<script src="./codemirror/mode/javascript/javascript.js"></script>
+<script>
+var g;
+var myCodeMirror;
+
+function loadURL(url, f) {
+
+  var xmlhttp;
+  if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+    }
+  else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    console.log(xmlhttp.responseText);
+    }
+  }    
+  xmlhttp.open("GET", url, false);
+  xmlhttp.send();
+}
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function update(v) {
+  var canvas = g.canvas;
+  var ctx = g.ctx;
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+  ctx.beginPath();
+  g.ctx._save();
+  document.querySelector("#message").innerHTML = "Code OK";
+  document.querySelector("#message").className = "success";
+  document.querySelector("#stack").style.display = "none";
+  document.querySelector("#stack").innerHTML = "";
+  
+  try {
+    editorCode(g, v);
+  }
+  catch(e) {
+    console.log(e.stack);
+    console.log(e);
+    console.log(e.message);
+    console.log(e.lineNumber);
+    document.querySelector("#message").innerHTML = "Error: " + e.message;
+    document.querySelector("#message").className = "error";
+    document.querySelector("#stack").style.display = "inline";
+    document.querySelector("#stack").innerHTML = e.stack;
+  }
+  while (g._saveCount > 0) {
+    ctx.restore();
+  }
+  g.ctx._restore();
+}
+
+window.onload = function() {
+  g = new Goo({ container: document.querySelector("#view"), width:480, height:480, animate:false});
+  
+  // hook save and restore so that we can make sure that the user entered code
+  // matches every save with a restore.
+  g._saveCount = 0;
+  g.ctx._save = g.ctx.save;
+  g.ctx._restore = g.ctx.restore;
+  g.ctx.save = function() {
+    //console.log("mysave");
+    g._saveCount++;
+    g.ctx._save();  
+  }
+  g.ctx.restore = function() {
+    //console.log("myrestore");
+    if (g._saveCount > 0) {
+      g._saveCount--;
+      g.ctx._restore();
+    }
+  }
+
+  myCodeMirror = CodeMirror.fromTextArea(document.querySelector("#edit"), 
+    {lineNumbers: true, tabSize: 2, theme: "base16-light"});
+  myCodeMirror.setSize(480,480);
+  //myCodeMirror.setOption("theme", "base16-light");
+  myCodeMirror.on('change', function() { update(myCodeMirror.getValue()); });
+  console.log(getParameterByName("codeURL"));
+ loadURL(getParameterByName("codeURL"), function() {
+ });
+};
+
+function snapshot() {
+  window.open(g.canvas.toDataURL(), "snapshot");
+}
+</script>
+
+<body>
+Canvas Playground by <a href="http://www.storminthecastle.com">John Robinson</a><br/>
+
+<div class="leftpanel">
+<div id="view" class="leftplay"></div><br/>
+<a onclick="snapshot(); return false;"; href="" target="snapshot">Snapshot</a>
+</div>
+<div class="panel">
+<div class="play">
+<textarea id="edit" spellcheck="false"></textarea>
+</div>
+<a href="">Clear</a>
+<div id="message"></div>
+<div id="stack"></div>
+</div>
+<br/>
+<br/>
+<br/>
+<a href="http://www.storminthecastle.com/projects/goo.js/">Powered by Goo.js</a>
+</body>
+</html>
