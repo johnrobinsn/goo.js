@@ -30,22 +30,7 @@ var Goo = function(o) {
   self.canvas.width = self.width;
   self.canvas.height = self.height;
 
-  if (self.__defineGetter__ && self.__defineSetter__) { 
-    self.__defineGetter__("width", function() {
-      return self.canvas.width;
-    });       
-    self.__defineSetter__("width", function(v) {
-      self.canvas.width = v;
-    });
-
-    self.__defineGetter__("height", function() {    
-      return self.canvas.height;
-    });       
-    self.__defineSetter__("height", function(v) {
-      self.canvas.height = v;
-    });
-  }
-  else if (Object.defineProperty) {  // Try the IE way
+  if (Object.defineProperty) {
     Object.defineProperty(self, "width", {
       get: function() {
         return self.canvas.width;
