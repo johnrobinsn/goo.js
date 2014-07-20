@@ -80,15 +80,12 @@ var Goo = function(o) {
     var rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
     if (!rAF) {
       rAF = function (callback) {
-        window.setTimeout(callback, 1000 / 30.0);
+        window.setTimeout(callback, 1000 / 30.0, Date.now());
       };
     }
     return rAF;
   })();
 
-  var getTick = Date.now?Date.now: function () {
-      return new Date().getTime();
-    }
 
   self.updateMouse = function(x, y) {
     var self = this;
@@ -200,11 +197,10 @@ var Goo = function(o) {
   });
   
   var fpsCounter = 0;
-  var fpsStartTime = getTick();
+  var fpsStartTime = Date.now();
   
-  function update() {
+  function update(tick) {
     sizeCanvas();
-    var tick = getTick();
     if (self.onDraw) 
       self.onDraw(self, tick);
     if (self.animate) {
