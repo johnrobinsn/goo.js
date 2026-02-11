@@ -135,7 +135,7 @@ var Goo = function(o) {
 
   document.addEventListener("touchstart", function(e) {
       if (e.target == self.canvas) {
-        self.updateMouse(e.pageX, e.pageY);
+        self.updateMouse(e.touches[0].pageX, e.touches[0].pageY);
         if (self.onMouseDown)
           self.onMouseDown(self);
         self.dragging = true;
@@ -149,9 +149,10 @@ var Goo = function(o) {
     }, false);
           
   document.addEventListener("touchmove", function(e) {
+	e.preventDefault();
       if (self.dragging)
       {
-        self.updateMouse(e.pageX, e.pageY);
+        self.updateMouse(e.touches[0].pageX, e.touches[0].pageY);
         self.onMouseDrag(self);
         e.preventDefault();
       }
