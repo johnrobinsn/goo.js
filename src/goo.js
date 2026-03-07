@@ -30,22 +30,7 @@ var Goo = function(o) {
   self.canvas.width = self.width;
   self.canvas.height = self.height;
 
-  if (self.__defineGetter__ && self.__defineSetter__) { 
-    self.__defineGetter__("width", function() {
-      return self.canvas.width;
-    });       
-    self.__defineSetter__("width", function(v) {
-      self.canvas.width = v;
-    });
-
-    self.__defineGetter__("height", function() {    
-      return self.canvas.height;
-    });       
-    self.__defineSetter__("height", function(v) {
-      self.canvas.height = v;
-    });
-  }
-  else if (Object.defineProperty) {  // Try the IE way
+  if (Object.defineProperty) {
     Object.defineProperty(self, "width", {
       get: function() {
         return self.canvas.width;
@@ -80,15 +65,12 @@ var Goo = function(o) {
     var rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
     if (!rAF) {
       rAF = function (callback) {
-        window.setTimeout(callback, 1000 / 30.0);
+        window.setTimeout(callback, 1000 / 30.0, Date.now());
       };
     }
     return rAF;
   })();
 
-  var getTick = Date.now?Date.now: function () {
-      return new Date().getTime();
-    }
 
   self.updateMouse = function(x, y) {
     var self = this;
@@ -200,11 +182,10 @@ var Goo = function(o) {
   });
   
   var fpsCounter = 0;
-  var fpsStartTime = getTick();
+  var fpsStartTime = Date.now();
   
-  function update() {
+  function update(tick) {
     sizeCanvas();
-    var tick = getTick();
     if (self.onDraw) 
       self.onDraw(self, tick);
     if (self.animate) {
