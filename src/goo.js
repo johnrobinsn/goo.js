@@ -219,4 +219,13 @@ var Goo = function(o) {
     }
   };
   requestAnimFrame(update);
+  
+  self.resumeAnimation() {
+    self.animate = true;
+    requestAnimFrame(update);
+  }
+  
+  self.pauseAnimation() {
+    self.animate = false;
+  }
 };
